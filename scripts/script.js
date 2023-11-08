@@ -99,6 +99,32 @@ function deleteCard(timestamp, columnName) {
   renderColumns();
 }
 
+// Update card preview function
+function updateCardPreview(event) {
+  event.preventDefault();
+  let cardPreview = document.getElementById("cardPreview");
+  let newTitle = document.getElementById("cardTitle");
+  let newContent = document.getElementById("cardContent");
+  // if title or content is not provided, or blank space,
+  // set the title and content to "... not provided"
+  if (newTitle.value && newTitle.value.trim().length !== 0) {
+    cardPreview.querySelector("h3").innerText = newTitle.value;
+  } else {
+    cardPreview.querySelector("h3").innerText = "Title not Provided!";
+  }
+  if (newContent.value && newContent.value.trim().length !== 0) {
+    cardPreview.querySelector("p").innerText = newContent.value;
+  } else {
+    cardPreview.querySelector("p").innerText = "Content not Provided!";
+  }
+  // Clear the form
+  newTitle.value = "";
+  newContent.value = "";
+}
+
+// Update card preview event listener
+document.getElementById("cardSubmitButton").addEventListener("click", updateCardPreview);
+
 //When we drag a DOM element around,
 // Tell the browser some data about what we are dragging
 function drag(event) {
