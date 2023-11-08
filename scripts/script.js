@@ -99,6 +99,19 @@ function deleteCard(timestamp, columnName) {
   renderColumns();
 }
 
+// Update card preview function
+function updateCardPreview(event) {
+  event.preventDefault();
+  let cardPreview = document.getElementById("cardPreview");
+  let newTitle = document.getElementById("cardTitle").value;
+  let newContent = document.getElementById("cardContent").value;
+  cardPreview.querySelector("h3").innerText = newTitle;
+  cardPreview.querySelector("p").innerText = newContent;
+}
+
+// Update card preview event listener
+document.getElementById("cardSubmitButton").addEventListener("click", updateCardPreview);
+
 //When we drag a DOM element around,
 // Tell the browser some data about what we are dragging
 function drag(event) {
