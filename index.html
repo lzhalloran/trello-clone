@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./styles/style.css" />
+    <title>No-Trello</title>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Trello card form and column form -->
+      <div class="row formRow">
+        <div class="column">
+          <!-- Form to create a card -->
+          <form id="cardForm">
+            <h1>Create a card:</h1>
+            <label for="cardTitle">Card title:</label>
+            <input type="text" name="cardTitle" id="cardTitle" />
+            <br />
+            <label for="cardContent">Card description content:</label>
+            <input type="text" name="cardContent" id="cardContent" />
+            <br />
+            <button id="cardSubmitButton" type="submit">
+              Update card preview
+            </button>
+          </form>
+        </div>
+        <div class="column">
+          <!-- Preview of the card with new data -->
+          <!-- div#cardPreview.trelloCard -->
+          <!-- id for the JS, class for the CSS -->
+          <div id="cardPreview" class="trelloCard" draggable="true">
+            <h3 class="cardDisplay-title">
+              Fill out the card title in the form!
+            </h3>
+            <p class="cardDisplay-content">Write a description in the form!</p>
+          </div>
+        </div>
+
+        <div class="column">
+          <!-- Form to create new columns -->
+          <form id="columForm">
+            <h1>Create a column:</h1>
+            <label for="columnTitle">Column title:</label>
+            <input type="text" name="columnTitle" id="columnTitle" />
+            <br />
+            <button id="columnSubmitButton" type="submit">Add column</button>
+          </form>
+        </div>
+      </div>
+
+      <div id="dataDisplayRow" class="row displayRow">
+        <!-- Column & card dsiplay section with drag and drop -->
+      </div>
+    </div>
+
+    <script src="./scripts/script.js"></script>
+  </body>
+</html>
