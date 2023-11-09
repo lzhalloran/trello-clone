@@ -58,16 +58,20 @@ function renderColumns() {
         card.timestamp = Date.now();
       }
 
-      newCard.id = card.timestamp;
+      newCard.id = 'card' + card.timestamp;
 
       //Find the h3 of the card title and change its content
       newCard.querySelector("h3").innerText = card.title;
       newCard.querySelector(".cardDisplay-title").innerText = card.title;
 
       //Same as the above for the paragraph
-      newCard.querySelector(".cardDisplay-content").innerText = card.content;
+      newCard.querySelector("p.cardDisplay-content").innerText = card.content;
+
+      //Update timestamp
+      newCard.querySelector("p.cardDisplay-timestamp").innerText = `Created on: ${new Date(parseInt(card.timestamp)).toLocaleString()}`;
 
       //allow cards to be draggable
+      newCard.draggable = true;
       newCard.addEventListener("dragstart", drag);
 
       //After data is all done, attach card to column
@@ -105,6 +109,8 @@ function updateCardPreview(event) {
   let cardPreview = document.getElementById("cardPreview");
   let newTitle = document.getElementById("cardTitle");
   let newContent = document.getElementById("cardContent");
+  let newTimestamp = new Date(); // Create a new date object
+
   // if title or content is not provided, or blank space,
   // set the title and content to "... not provided"
   if (newTitle.value && newTitle.value.trim().length !== 0) {
@@ -117,6 +123,8 @@ function updateCardPreview(event) {
   } else {
     cardPreview.querySelector("p").innerText = "Content not Provided!";
   }
+  cardPreview.querySelector(".cardDisplay-timestamp").innerText = newTimestamp.toLocaleString();
+  cardPreview.setAttribute('data-timestamp', newTimestamp.valueOf());
   // Clear the form
   newTitle.value = "";
   newContent.value = "";
@@ -146,11 +154,15 @@ function dropCard(event) {
   //console.log("Dropped card, id: " + data);
 
   let oldCardElement = document.getElementById(data);
+  let oldCardId = oldCardElement.id.replace('card', '');
+  let oldCardTimestamp = parseInt(oldCardId);
+
   console.log(oldCardElement);
+
   let oldCardData = {
     title: oldCardElement.querySelector(".cardDisplay-title").innerText,
     content: oldCardElement.querySelector(".cardDisplay-content").innerText,
-    timestamp: oldCardElement.id,
+    timestamp: oldCardTimestamp,
   };
 
   //Find the column data for the column the we just dragged the card on to
