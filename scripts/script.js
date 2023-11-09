@@ -28,6 +28,12 @@ function renderColumns() {
   //Removing any stale or old HTML content
   trelloDataRowRootNode.innerHTML = "";
 
+  //Give the root node some drag and drop event handling for columns
+  trelloDataRowRootNode.addEventListener("dragover", allowDrop);
+
+  // Allow us to detect when a column is dropped into the root node
+  trelloDataRowRootNode.addEventListener("drop", dropColumn);
+
   //Generate new HTML content
   trelloData.columns.forEach((column) => {
     console.log(column.name);
@@ -58,7 +64,7 @@ function renderColumns() {
         card.timestamp = Date.now();
       }
 
-      newCard.id = 'card' + card.timestamp;
+      newCard.id = "card" + card.timestamp;
 
       //Find the h3 of the card title and change its content
       newCard.querySelector("h3").innerText = card.title;
@@ -68,7 +74,11 @@ function renderColumns() {
       newCard.querySelector("p.cardDisplay-content").innerText = card.content;
 
       //Update timestamp
-      newCard.querySelector("p.cardDisplay-timestamp").innerText = `Created on: ${new Date(parseInt(card.timestamp)).toLocaleString()}`;
+      newCard.querySelector(
+        "p.cardDisplay-timestamp"
+      ).innerText = `Created on: ${new Date(
+        parseInt(card.timestamp)
+      ).toLocaleString()}`;
 
       //allow cards to be draggable
       newCard.draggable = true;
@@ -90,6 +100,10 @@ function renderColumns() {
       // Append delete button to card
       newCard.appendChild(deleteButton);
     });
+
+    //allow columns to be draggable
+    columnNode.draggable = true;
+    columnNode.addEventListener("dragstart", drag);
 
     //after column is created, append it to its node as a child
     trelloDataRowRootNode.appendChild(columnNode);
@@ -123,15 +137,18 @@ function updateCardPreview(event) {
   } else {
     cardPreview.querySelector("p").innerText = "Content not Provided!";
   }
-  cardPreview.querySelector(".cardDisplay-timestamp").innerText = newTimestamp.toLocaleString();
-  cardPreview.setAttribute('data-timestamp', newTimestamp.valueOf());
+  cardPreview.querySelector(".cardDisplay-timestamp").innerText =
+    newTimestamp.toLocaleString();
+  cardPreview.setAttribute("data-timestamp", newTimestamp.valueOf());
   // Clear the form
   newTitle.value = "";
   newContent.value = "";
 }
 
 // Update card preview event listener
-document.getElementById("cardSubmitButton").addEventListener("click", updateCardPreview);
+document
+  .getElementById("cardSubmitButton")
+  .addEventListener("click", updateCardPreview);
 
 //When we drag a DOM element around,
 // Tell the browser some data about what we are dragging
@@ -148,13 +165,17 @@ function allowDrop(event) {
 
 function dropCard(event) {
   event.preventDefault();
-  console.log("Event target: " + event.target.id);
-
+  event.stopImmediatePropagation();
   let data = event.dataTransfer.getData("text");
-  //console.log("Dropped card, id: " + data);
+  if (document.getElementById(data).classList.contains("trelloColumn")) {
+    console.log("Can't drop column in column");
+    return;
+  } else if (!event.target.classList.contains("trelloColumn")) {
+    return;
+  }
 
   let oldCardElement = document.getElementById(data);
-  let oldCardId = oldCardElement.id.replace('card', '');
+  let oldCardId = oldCardElement.id.replace("card", "");
   let oldCardTimestamp = parseInt(oldCardId);
 
   console.log(oldCardElement);
@@ -175,9 +196,19 @@ function dropCard(event) {
       column.cards.push(oldCardData);
     }
   });
-
   //Any time we modify trelloData, we should re-render columns and cards
   renderColumns();
+}
+
+function dropColumn(event) {
+  event.preventDefault();
+  event.stopImmediatePropagation();
+  let data = event.dataTransfer.getData("text");
+  if (!document.getElementById(data).classList.contains("trelloColumn")) {
+    console.log("Can't drop card in dataDisplayRow");
+    return;
+  }
+  console.log("Dropped column");
 }
 
 renderColumns();
