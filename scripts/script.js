@@ -58,7 +58,7 @@ function renderColumns() {
         card.timestamp = Date.now();
       }
 
-      newCard.id = 'card' + card.timestamp;
+      newCard.id = "card" + card.timestamp;
 
       //Find the h3 of the card title and change its content
       newCard.querySelector("h3").innerText = card.title;
@@ -68,7 +68,11 @@ function renderColumns() {
       newCard.querySelector("p.cardDisplay-content").innerText = card.content;
 
       //Update timestamp
-      newCard.querySelector("p.cardDisplay-timestamp").innerText = `Created on: ${new Date(parseInt(card.timestamp)).toLocaleString()}`;
+      newCard.querySelector(
+        "p.cardDisplay-timestamp"
+      ).innerText = `Created on: ${new Date(
+        parseInt(card.timestamp)
+      ).toLocaleString()}`;
 
       //allow cards to be draggable
       newCard.draggable = true;
@@ -90,6 +94,18 @@ function renderColumns() {
       // Append delete button to card
       newCard.appendChild(deleteButton);
     });
+
+    // Create a delete button for the column
+    let deleteColumnButton = document.createElement("button");
+    deleteColumnButton.innerText = "Delete Column";
+    deleteColumnButton.classList.add("deleteButton");
+    deleteColumnButton.classList.add("deleteColumnButton");
+    columnNode.appendChild(deleteColumnButton);
+
+    // Add a listener to the delete column button
+    deleteColumnButton.addEventListener("click", () =>
+      removeColumn(event, column)
+    );
 
     //after column is created, append it to its node as a child
     trelloDataRowRootNode.appendChild(columnNode);
@@ -123,15 +139,30 @@ function updateCardPreview(event) {
   } else {
     cardPreview.querySelector("p").innerText = "Content not Provided!";
   }
-  cardPreview.querySelector(".cardDisplay-timestamp").innerText = newTimestamp.toLocaleString();
-  cardPreview.setAttribute('data-timestamp', newTimestamp.valueOf());
+  cardPreview.querySelector(".cardDisplay-timestamp").innerText =
+    newTimestamp.toLocaleString();
+  cardPreview.setAttribute("data-timestamp", newTimestamp.valueOf());
   // Clear the form
   newTitle.value = "";
   newContent.value = "";
 }
 
 // Update card preview event listener
-document.getElementById("cardSubmitButton").addEventListener("click", updateCardPreview);
+document
+  .getElementById("cardSubmitButton")
+  .addEventListener("click", updateCardPreview);
+
+// Remove column
+function removeColumn(event, column) {
+  event.preventDefault();
+
+  trelloData.columns = trelloData.columns.filter(
+    (currentColumn) => currentColumn !== column
+  );
+
+  //Any time we modify trelloData, we should re-render columns and cards
+  renderColumns();
+}
 
 //When we drag a DOM element around,
 // Tell the browser some data about what we are dragging
