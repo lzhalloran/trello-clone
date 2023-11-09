@@ -208,7 +208,16 @@ function dropColumn(event) {
     console.log("Can't drop card in dataDisplayRow");
     return;
   }
-  console.log("Dropped column");
+
+  let oldColumnName = document.getElementById(data).id;
+  let oldColumnData = trelloData.columns.find(
+    (column) => column.name === oldColumnName
+  );
+  trelloData.columns = trelloData.columns.filter(
+    (column) => column.name != oldColumnName
+  );
+  trelloData.columns.push(oldColumnData);
+  renderColumns();
 }
 
 renderColumns();
