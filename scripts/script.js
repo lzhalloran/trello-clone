@@ -28,6 +28,12 @@ function renderColumns() {
   //Removing any stale or old HTML content
   trelloDataRowRootNode.innerHTML = "";
 
+  //Give the root node some drag and drop event handling for columns
+  trelloDataRowRootNode.addEventListener("dragover", allowDrop);
+
+  // Allow us to detect when a column is dropped into the root node
+  trelloDataRowRootNode.addEventListener("drop", dropColumn);
+
   //Generate new HTML content
   trelloData.columns.forEach((column) => {
     console.log(column.name);
@@ -106,6 +112,10 @@ function renderColumns() {
     deleteColumnButton.addEventListener("click", () =>
       removeColumn(event, column)
     );
+    
+    //allow columns to be draggable
+    columnNode.draggable = true;
+    columnNode.addEventListener("dragstart", drag);
 
     //after column is created, append it to its node as a child
     trelloDataRowRootNode.appendChild(columnNode);
@@ -179,13 +189,17 @@ function allowDrop(event) {
 
 function dropCard(event) {
   event.preventDefault();
-  console.log("Event target: " + event.target.id);
-
+  event.stopImmediatePropagation();
   let data = event.dataTransfer.getData("text");
-  //console.log("Dropped card, id: " + data);
+  if (document.getElementById(data).classList.contains("trelloColumn")) {
+    console.log("Can't drop column in column");
+    return;
+  } else if (!event.target.classList.contains("trelloColumn")) {
+    return;
+  }
 
   let oldCardElement = document.getElementById(data);
-  let oldCardId = oldCardElement.id.replace('card', '');
+  let oldCardId = oldCardElement.id.replace("card", "");
   let oldCardTimestamp = parseInt(oldCardId);
 
   console.log(oldCardElement);
@@ -206,8 +220,27 @@ function dropCard(event) {
       column.cards.push(oldCardData);
     }
   });
-
   //Any time we modify trelloData, we should re-render columns and cards
+  renderColumns();
+}
+
+function dropColumn(event) {
+  event.preventDefault();
+  event.stopImmediatePropagation();
+  let data = event.dataTransfer.getData("text");
+  if (!document.getElementById(data).classList.contains("trelloColumn")) {
+    console.log("Can't drop card in dataDisplayRow");
+    return;
+  }
+
+  let oldColumnName = document.getElementById(data).id;
+  let oldColumnData = trelloData.columns.find(
+    (column) => column.name === oldColumnName
+  );
+  trelloData.columns = trelloData.columns.filter(
+    (column) => column.name != oldColumnName
+  );
+  trelloData.columns.push(oldColumnData);
   renderColumns();
 }
 
