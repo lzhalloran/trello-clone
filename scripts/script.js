@@ -157,6 +157,23 @@ function updateCardPreview(event) {
   newContent.value = "";
 }
 
+function addColumn(event){
+  event.preventDefault();
+  let columnTitle = document.getElementById("columnTitle").value.trim();
+  if (columnTitle) {
+    trelloData.columns.push({
+      name: columnTitle,
+      cards:[]
+    });
+    renderColumns();
+    document.getElementById("columnTitle").value = '';
+  } else {
+    alert("please enter a column title.");
+  }
+}
+
+document.getElementById("columnSubmitButton").addEventListener("click", addColumn);
+
 // Update card preview event listener
 document
   .getElementById("cardSubmitButton")
