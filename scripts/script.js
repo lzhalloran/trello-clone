@@ -101,6 +101,18 @@ function renderColumns() {
       newCard.appendChild(deleteButton);
     });
 
+    // Create a delete button for the column
+    let deleteColumnButton = document.createElement("button");
+    deleteColumnButton.innerText = "Delete Column";
+    deleteColumnButton.classList.add("deleteButton");
+    deleteColumnButton.classList.add("deleteColumnButton");
+    columnNode.appendChild(deleteColumnButton);
+
+    // Add a listener to the delete column button
+    deleteColumnButton.addEventListener("click", () =>
+      removeColumn(event, column)
+    );
+    
     //allow columns to be draggable
     columnNode.draggable = true;
     columnNode.addEventListener("dragstart", drag);
@@ -149,6 +161,18 @@ function updateCardPreview(event) {
 document
   .getElementById("cardSubmitButton")
   .addEventListener("click", updateCardPreview);
+
+// Remove column
+function removeColumn(event, column) {
+  event.preventDefault();
+
+  trelloData.columns = trelloData.columns.filter(
+    (currentColumn) => currentColumn !== column
+  );
+
+  //Any time we modify trelloData, we should re-render columns and cards
+  renderColumns();
+}
 
 //When we drag a DOM element around,
 // Tell the browser some data about what we are dragging

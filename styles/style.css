@@ -58,6 +58,8 @@ body {
   margin: 1%;
   border-radius: 15px;
   padding: 1%;
+  display: flex;
+  flex-direction: column;
 
 }
 /* All Trello cards style, even the one in the preview section */
@@ -86,6 +88,11 @@ body {
   padding: 2%;
   border-radius: 5px;
   font-size: 14px;
+}
+
+.deleteColumnButton {
+  width: fit-content;
+  align-self: center;
 }
 
 /* Style just the card in the preview section */
